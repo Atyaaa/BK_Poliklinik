@@ -35,6 +35,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $pesan = "ID Dokter tidak valid.";
     }
 }
+
+
 ?>
 
 
@@ -90,14 +92,50 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </div>
         </form>
 
+        
 
         <?php
         // Tampilkan pesan sukses atau gagal
         if (isset($pesan)) {
             echo "<p>$pesan</p>";
         }
+
+        // Query untuk mengambil data daftar_poli dan mengurutkannya berdasarkan no_antrian
+        $queryDaftarAntrian = "SELECT jadwal_periksa.hari, jadwal_periksa.jam_mulai, jadwal_periksa.jam_selesai, jadwal_periksa.status, dokter.id
+            FROM jadwal_periksa
+            INNER JOIN dokter ON jadwal_periksa.id_dokter = dokter.id
+            WHERE dokter.id = $id_dokter";
+
+                $resultDaftarAntrian = $mysqli->query($queryDaftarAntrian);
+
+                if ($resultDaftarAntrian) {
+                    ?>
+                    <div class="container">
+                    <h3 class="mt-4">Daftar Jadwal Poliklinik:</h3>
+                    <div class="table-responsive">
+                    <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th scope="col">Hari</th>
+                            <th scope="col">Jam</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        while ($row = $resultDaftarAntrian->fetch_assoc()) {
+                            echo "<tr>";
+                            echo "<td>" . $row['hari'] . "</td>";
+                            echo "<td>" . $row['jam_mulai'] . " - " . $row['jam_selesai'] . "</td>";
+                            echo "<td>" . $row['status'] . "</td>";
+                            echo "<td><button type='submit' class='btn btn-primary rounded-pill px-3 mt-auto' name='kirim'>Ubah Status</button></td>";
+                            
+                        }
+                }
         ?>
     </main>
+    
 </body>
 
 </html>
