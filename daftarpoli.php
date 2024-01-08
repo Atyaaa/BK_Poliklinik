@@ -104,10 +104,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             echo "<p>Nomor Rekam medis mu adalah : " . $nomor_rm . "</p>";
 
             // Query to get the list of scheduled appointments
-            $queryDaftarPoli = "SELECT jadwal_periksa.id, jadwal_periksa.hari, jadwal_periksa.jam_mulai, jadwal_periksa.jam_selesai, poli.nama_poli, dokter.nama
+            $queryDaftarPoli = "SELECT jadwal_periksa.id, jadwal_periksa.hari, jadwal_periksa.jam_mulai, jadwal_periksa.jam_selesai, jadwal_periksa.status, poli.nama_poli, dokter.nama
             FROM jadwal_periksa
             INNER JOIN dokter ON jadwal_periksa.id_dokter = dokter.id
-            INNER JOIN poli ON dokter.id_poli = poli.id";
+            INNER JOIN poli ON dokter.id_poli = poli.id
+            WHERE jadwal_periksa.status = 'Aktif'";
+            
             $resultDaftarPoli = $mysqli->query($queryDaftarPoli);
 
             if ($resultDaftarPoli) {
@@ -121,7 +123,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <th scope='col'>Hari</th>
                             <th scope='col'>Dokter</th>
                             <th scope='col'>Poli</th>
-                            <th scope='col'>Jam</th>";
+                            <th scope='col'>Jam</th>
+                            <th scope='col'>Status</th>";
                 // Check if the user is logged in
                 if (isset($_SESSION['no_rm'])) {
                     echo "<th scope='col'>Daftar</th>";
@@ -137,6 +140,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     echo "<td>" . $row['nama'] . "</td>";
                     echo "<td>" . $row['nama_poli'] . "</td>";
                     echo "<td>" . $row['jam_mulai'] . " - " . $row['jam_selesai'] . "</td>";
+                    echo "<td>" . $row['status'] . "</td>";
                     // Check if the user is logged in
                     if (isset($_SESSION['no_rm'])) {
                         echo "<td><a href='pendataanpoli.php?id_pasien=" . $id_pasien . "&id_jadwal=" . $row['id'] . "' class='btn btn-primary'>Pilih</a></td>";
@@ -160,10 +164,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo "<p>Anda dapat melihat daftar poliklinik tanpa login. Silahkan login untuk mendaftar poliklinik.</p>";
 
         // Query to get the list of scheduled appointments
-        $queryDaftarPoli = "SELECT jadwal_periksa.id, jadwal_periksa.hari, jadwal_periksa.jam_mulai, jadwal_periksa.jam_selesai, poli.nama_poli, dokter.nama
+        $queryDaftarPoli = "SELECT jadwal_periksa.id, jadwal_periksa.hari, jadwal_periksa.jam_mulai, jadwal_periksa.jam_selesai, jadwal_periksa.status, poli.nama_poli, dokter.nama
         FROM jadwal_periksa
         INNER JOIN dokter ON jadwal_periksa.id_dokter = dokter.id
-        INNER JOIN poli ON dokter.id_poli = poli.id";
+        INNER JOIN poli ON dokter.id_poli = poli.id
+        WHERE jadwal_periksa.status = 'Aktif'";
         $resultDaftarPoli = $mysqli->query($queryDaftarPoli);
 
         if ($resultDaftarPoli) {
